@@ -1,0 +1,13 @@
+.filter-panel{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-options{
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  flex-direction: row;
+}

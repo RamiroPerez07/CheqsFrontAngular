@@ -1,0 +1,20 @@
+.row-form-field-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.mr{
+  margin-right: 15px;
+}
+
+mat-form-field{
+  margin: 5px;
+  width: 100%;
+  /*max-width: 240px;*/
+}
+
+mat-dialog-actions{
+  justify-content: right !important;
+}

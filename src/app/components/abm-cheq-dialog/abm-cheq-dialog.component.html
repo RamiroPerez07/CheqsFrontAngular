@@ -1,0 +1,111 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+<mat-dialog-content>
+  <!-- <p></p> -->
+  <form action="" [formGroup]="cheqGroupControl">
+
+    <div class="row-form-field-container">
+      <!-- Issue Date -->
+      <mat-form-field>
+        <mat-label>Fecha Emisión</mat-label>
+        <input matInput [matDatepicker]="pickerIssue" formControlName="issueDateControl">
+        <mat-hint>DD/MM/AAAA</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="pickerIssue"></mat-datepicker-toggle>
+        <mat-datepicker #pickerIssue></mat-datepicker>
+        @if(cheqGroupControl.get('issueDateControl')?.hasError('required') &&
+        cheqGroupControl.get('issueDateControl')?.touched){
+        <mat-error>
+          La fecha de emisión es obligatoria
+        </mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Cheq Type -->
+      <mat-form-field>
+        <mat-label>Tipo de cheque</mat-label>
+        <input type="text" placeholder="Elegir" aria-label="Tipo de cheque" matInput formControlName="cheqTypeControl"
+          [matAutocomplete]="autoType">
+        <mat-autocomplete #autoType="matAutocomplete" [displayWith]="cheqTypesDisplayFn">
+          @for (cheqType of filteredCheqTypes | async; track cheqType) {
+          <mat-option [value]="cheqType">{{cheqType.typeName}}</mat-option>
+          }
+        </mat-autocomplete>
+        @if(cheqGroupControl.get('cheqTypeControl')?.hasError('invalidType') && cheqGroupControl.get('cheqTypeControl')?.touched){
+          <mat-error>
+            Elija un tipo válido
+          </mat-error>
+        }
+      </mat-form-field>
+
+
+    </div>
+
+    <div class="row-form-field-container">
+
+      <!-- Cheq number -->
+      <mat-form-field>
+        <mat-label>Número de cheque</mat-label>
+        <input matInput formControlName="cheqNumberControl" />
+        <!-- Mensaje de error -->
+        @if(cheqGroupControl.get('cheqNumberControl')?.hasError('required') &&
+        cheqGroupControl.get('cheqNumberControl')?.touched){
+        <mat-error>
+          Número inválido
+        </mat-error>
+        }
+      </mat-form-field>
+
+
+      <!-- Due Date -->
+
+      <mat-form-field>
+        <mat-label>Fecha Vto</mat-label>
+        <input matInput [matDatepicker]="pickerVto" formControlName="dueDateControl">
+        <mat-hint>DD/MM/AAAA</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="pickerVto"></mat-datepicker-toggle>
+        <mat-datepicker #pickerVto></mat-datepicker>
+        @if(cheqGroupControl.get('dueDateControl')?.hasError('required') &&
+        cheqGroupControl.get('dueDateControl')?.touched){
+        <mat-error>
+          La fecha de vencimiento es obligatoria
+        </mat-error>
+        }
+      </mat-form-field>
+
+    </div>
+
+    <mat-form-field>
+      <mat-label>Entidad</mat-label>
+      <input type="text" placeholder="Pick one" aria-label="Number" matInput formControlName="entityControl"
+        [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="entitiesDisplayFn">
+        @for (entity of filteredEntities | async; track entity) {
+        <mat-option [value]="entity">{{entity.entityName}}</mat-option>
+        }
+      </mat-autocomplete>
+      <!-- Mostrar el error si el campo está vacío -->
+      @if(cheqGroupControl.get('entityControl')?.hasError('invalidEntity') && cheqGroupControl.get('entityControl')?.touched){
+        <mat-error>
+          Elija una entidad válida
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Cheq amount -->
+    <mat-form-field>
+      <mat-label>Monto</mat-label>
+      <input type="number" matInput formControlName="cheqAmountControl" />
+      <!-- Mensaje de error -->
+      @if(cheqGroupControl.get('cheqAmountControl')?.hasError('required') &&
+      cheqGroupControl.get('cheqAmountControl')?.touched){
+      <mat-error>
+        Monto inválido
+      </mat-error>
+      }
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onCloseDialog()">Cancelar</button>
+  <button mat-button (click)="onSubmit()" cdkFocusInitial>Guardar</button>
+</mat-dialog-actions>
