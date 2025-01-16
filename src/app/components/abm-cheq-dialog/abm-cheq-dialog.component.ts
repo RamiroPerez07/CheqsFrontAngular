@@ -175,7 +175,7 @@ export class AbmCheqDialogComponent implements OnInit {
   }
 
   onCloseDialog() : void{
-    this.dialogRef.close();
+    this.dialogRef.close(null);
   }
 
   onSubmit(){

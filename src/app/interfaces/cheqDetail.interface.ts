@@ -23,7 +23,7 @@ export interface ICheqDetail {
 }
 
 export interface ICheq {
-  id? : number;
+  id : number;
   cheqNumber: string;
   entityId : number;
   typeId : number;

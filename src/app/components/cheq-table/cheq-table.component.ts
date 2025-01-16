@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import {SelectionModel} from '@angular/cdk/collections';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
 import { ICheqDetail } from '../../interfaces/cheqDetail.interface';
 import { CheqsServiceService } from '../../services/cheqs-service.service';
 import { ToastrService } from 'ngx-toastr';
@@ -10,7 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-cheq-table',
   standalone: true,
-  imports: [MatTableModule, MatCheckboxModule, CurrencyPipe, DatePipe],
+  imports: [MatTableModule, MatCheckboxModule, CurrencyPipe, DatePipe, NgClass],
   templateUrl: './cheq-table.component.html',
   styleUrl: './cheq-table.component.css'
 })

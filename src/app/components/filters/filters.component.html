@@ -17,14 +17,23 @@
     </mat-form-field>
   </form>
   <div class="filter-options">
+
+    <!-- Boton de selección de vista -->
+
+    <mat-button-toggle-group name="fontStyle" aria-label="Font Style" (change)="toggleView($event)" value="lista">
+      <mat-button-toggle value="lista">Lista</mat-button-toggle>
+      <mat-button-toggle value="grupos">Grupos</mat-button-toggle>
+    </mat-button-toggle-group>
+
+
     <button mat-button (click)="openDialog()">Agregar Cheque</button>
     <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item>
-        <mat-icon>dialpad</mat-icon>
-        <span>Redial</span>
+      <button (click)="deleteCheqs()" mat-menu-item [disabled]="!cheqSelection.hasValue()">
+        <mat-icon>delete</mat-icon>
+        <span>Eliminar</span>
       </button>
       <button mat-menu-item disabled>
         <mat-icon>voicemail</mat-icon>
@@ -37,4 +46,3 @@
     </mat-menu>
   </div>
 </div>
-{{cheqSelection.selected| json}}

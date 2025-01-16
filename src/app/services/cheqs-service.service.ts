@@ -13,6 +13,8 @@ export class CheqsServiceService {
 
   private readonly _urlCreateCheq = "http://localhost:5134/api/Cheqs";
 
+  private readonly _urlDeleteCheq = "http://localhost:5134/api/Cheqs";
+
   private readonly _http = inject(HttpClient)
 
   public cheqsDetail = new BehaviorSubject<ICheqDetail[]>([]);
@@ -46,5 +48,10 @@ export class CheqsServiceService {
 
   createCheq(cheq: ICheq):Observable<ICheq>{
     return this._http.post<ICheq>(this._urlCreateCheq, cheq)
+  }
+
+  deleteCheqs(cheqs: ICheqDetail[]){
+    const ids = [...cheqs.map(ch => ch.cheqId)]
+    return this._http.delete<ICheqDetail[]>(this._urlDeleteCheq, {body: ids})
   }
 }
