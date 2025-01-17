@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ICheq, ICheqDetail } from '../interfaces/cheqDetail.interface';
+import { ICheq, ICheqDetail, IGroupedCheqs } from '../interfaces/cheqDetail.interface';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { SelectionModel } from '@angular/cdk/collections';
 
 @Injectable({
   providedIn: 'root'
@@ -19,21 +18,69 @@ export class CheqsServiceService {
 
   public cheqsDetail = new BehaviorSubject<ICheqDetail[]>([]);
 
+  public groupedCheqsDetail = new BehaviorSubject<IGroupedCheqs[]>([]);
+
   $cheqsDetail = this.cheqsDetail.asObservable();
 
-  public cheqSelection = new BehaviorSubject<SelectionModel<ICheqDetail>>(new SelectionModel<ICheqDetail>(true, []));
+  $groupedCheqsDetail = this.groupedCheqsDetail.asObservable();
 
-  $cheqSelection = this.cheqSelection.asObservable();
+  initialBalance = 10000;
 
-  // Actualizar la selección
-  updateCheqSelection(selection: ICheqDetail[]): void {
-    const selectionModel = new SelectionModel<ICheqDetail>(true, selection);
-    this.cheqSelection.next(selectionModel); // Actualiza la selección
+  private _calculateAccumulatedAmount(cheqsDetailData: ICheqDetail[]) : ICheqDetail[] {
+    let accumulatedAmount = this.initialBalance;
+    // Itera sobre los datos y acumula el valor de cada cheque
+    cheqsDetailData.forEach(row => {
+      row['accumulatedAmount'] = accumulatedAmount + row.amount;
+      accumulatedAmount += row.amount;
+    });
+    return cheqsDetailData;
+
   }
 
-  // Limpiar la selección global
-  clearSelection(): void {
-    this.cheqSelection.next(new SelectionModel<ICheqDetail>(true, [])); // Limpiar la selección
+  private _sortData(cheqsDetailData: ICheqDetail[]) : ICheqDetail[] {
+    return [...cheqsDetailData.sort((a, b) => {
+      // Asegurarse de convertir dueDate a Date
+      const dateA = new Date(a.dueDate); 
+      const dateB = new Date(b.dueDate); 
+  
+      // Verifica si las fechas son válidas
+      if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
+        return 0; // Si alguna fecha no es válida, no se realiza el orden
+      }
+  
+      return dateA.getTime() - dateB.getTime();
+    })];
+  }
+
+  private _groupAndSortCheqs(cheques: ICheqDetail[]): IGroupedCheqs[] {
+    // Paso 1: Agrupar los cheques por "mm/yyyy" usando dueDate
+    const grouped = cheques.reduce((acc, cheque) => {
+      const date = new Date(cheque.dueDate);  // Cambiado a dueDate
+      const period = `${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`; // mm/yyyy
+  
+      if (!acc[period]) {
+        acc[period] = [];
+      }
+      
+      acc[period].push(cheque);
+      return acc;
+    }, {} as Record<string, ICheqDetail[]>);
+  
+    // Paso 2: Ordenar los cheques dentro de cada grupo por dueDate (ascendente)
+    for (const period in grouped) {
+      grouped[period].sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());  // Cambiado a dueDate
+    }
+  
+    // Paso 3: Convertir el objeto en un array de objetos con formato adecuado
+    return Object.entries(grouped)
+      .map(([period, cheqs]) => ({ period, cheqs }))
+      .sort((a, b) => {
+        const [monthA, yearA] = a.period.split('/').map(Number);
+        const [monthB, yearB] = b.period.split('/').map(Number);
+        
+        // Ordenar cronológicamente
+        return yearA !== yearB ? yearA - yearB : monthA - monthB;
+      });
   }
 
   constructor() {}
@@ -41,7 +88,13 @@ export class CheqsServiceService {
   getCheqsDetail():Observable<ICheqDetail[]>{
     return this._http.get<ICheqDetail[]>(this._urlCheqsDetail).pipe(
       tap((cheqDetails: ICheqDetail[]) => {
-        this.cheqsDetail.next(cheqDetails);
+
+        let cheqs = this._sortData(cheqDetails);
+        cheqs = this._calculateAccumulatedAmount(cheqs);
+        let groupedCheqsDetail = this._groupAndSortCheqs(cheqs);
+
+        this.cheqsDetail.next(cheqs);
+        this.groupedCheqsDetail.next(groupedCheqsDetail);
       })
     )
   }

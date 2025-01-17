@@ -2,6 +2,9 @@ table {
   width: 100%;
 }
 
-.negative{
-  color: red;
+.btn-container{
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  margin: 5px;
 }

@@ -7,11 +7,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import {AbstractControl, FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { IBusiness } from '../../models/business.interface';
 import { map, Observable, startWith } from 'rxjs';
-import { AsyncPipe, JsonPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { AbmCheqDialogComponent } from '../abm-cheq-dialog/abm-cheq-dialog.component';
-import { ICheq, ICheqDetail } from '../../interfaces/cheqDetail.interface';
+import { ICheq, ICheqDetail, IGroupedCheqs } from '../../interfaces/cheqDetail.interface';
 import { CheqsServiceService } from '../../services/cheqs-service.service';
 import { ToastrService } from 'ngx-toastr';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -74,12 +74,7 @@ export class FiltersComponent implements OnInit {
         this.cheqsDetail = cheqsDetail;
       }
     })
-
-    this.cheqsSvc.$cheqSelection.subscribe({
-      next: (cheqSelection) => {
-        this.cheqSelection = cheqSelection;
-      }
-    })
+    
   }
 
   readonly dialog = inject(MatDialog);
@@ -94,19 +89,7 @@ export class FiltersComponent implements OnInit {
     })
   }
 
-  deleteCheqs(){
-    if (this.cheqSelection.isEmpty()) return
-    this.cheqsSvc.deleteCheqs(this.cheqSelection.selected).subscribe({
-      next: () => {
-        this.toastSvc.success("Eliminar", "Cheques eliminados correctamente");
-        this.updateCheqs();
-        this.cheqsSvc.clearSelection();
-      },
-      error: (err) => {
-        this.toastSvc.error(err, "Error");
-      }
-    });
-  }
+  
 
   openDialog():void{
     const dialogRef = this.dialog.open(AbmCheqDialogComponent, {
@@ -118,9 +101,10 @@ export class FiltersComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe((result: ICheq) => {
+      if(!result) return
       this.cheqsSvc.createCheq(result).subscribe({
         next: () => {
-          if(!result) return
+          //if(!result) return
           this.updateCheqs();
           this.toastSvc.success("Cheque creado correctamente","Nuevo cheque")
         },
@@ -134,48 +118,11 @@ export class FiltersComponent implements OnInit {
 
   viewMode: "lista" | "grupos" = "lista"
 
-  groupedCheqs! : [string, ICheqDetail[]][];
-
-  @Output() groupedCheqsEmitter = new EventEmitter<[string, ICheqDetail[]][]>();
+  @Output() changeViewMode = new EventEmitter<"lista" | "grupos">();
 
   toggleView(event : MatButtonToggleChange){
-    console.log(event.value);
-    if(event.value === "grupos"){
-      if(this.cheqsDetail.length === 0) return
-      this.groupedCheqs = this.groupAndSortCheqs(this.cheqsDetail);
-    }else{
-      this.groupedCheqs = [];
-    }
-    this.groupedCheqsEmitter.emit(this.groupedCheqs);
-  }
-
-
-  groupAndSortCheqs(cheques: ICheqDetail[]): [string, ICheqDetail[]][] {
-    // Paso 1: Agrupar los cheques por "mm/yyyy"
-    const grouped = cheques.reduce((acc, cheque) => {
-      const date = new Date(cheque.issueDate);
-      const key = `${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`; // mm/yyyy
-  
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      
-      acc[key].push(cheque);
-      return acc;
-    }, {} as Record<string, ICheqDetail[]>);
-  
-    // Paso 2: Ordenar los cheques dentro de cada grupo por fecha (ascendente)
-    for (const key in grouped) {
-      grouped[key].sort((a, b) => new Date(a.issueDate).getTime() - new Date(b.issueDate).getTime());
-    }
-  
-    // Paso 3: Convertir el objeto en un array de tuplas [key, value] y ordenarlo cronológicamente
-    return Object.entries(grouped).sort(([keyA], [keyB]) => {
-      const [monthA, yearA] = keyA.split('/').map(Number);
-      const [monthB, yearB] = keyB.split('/').map(Number);
-      
-      return yearA !== yearB ? yearA - yearB : monthA - monthB;
-    });
+    this.viewMode = event.value;
+    this.changeViewMode.emit(this.viewMode);
   }
 
 

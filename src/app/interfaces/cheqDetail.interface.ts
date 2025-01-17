@@ -34,3 +34,9 @@ export interface ICheq {
   amount: number;
   createdAt : Date;
 }
+
+
+export interface IGroupedCheqs{
+  period: string,
+  cheqs: ICheqDetail[]
+}

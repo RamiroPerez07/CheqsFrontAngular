@@ -9,3 +9,16 @@ header{
   width: 100%;
   max-width: 1300px;
 }
+
+.action-buttons{
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.accordion-panel{
+  margin-bottom: 5px;
+}
+
+.panel-description{
+  justify-content: flex-end !important;
+}

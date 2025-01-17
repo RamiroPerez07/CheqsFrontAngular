@@ -12,3 +12,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 main{
   padding: 10px 15px;
 }
+
+.negative{
+  color: red !important;
+}
