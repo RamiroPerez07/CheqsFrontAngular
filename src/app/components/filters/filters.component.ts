@@ -7,7 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import {AbstractControl, FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { IBusiness } from '../../models/business.interface';
 import { map, Observable, startWith } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { AbmCheqDialogComponent } from '../abm-cheq-dialog/abm-cheq-dialog.component';
@@ -20,7 +20,7 @@ import {MatButtonToggleChange, MatButtonToggleModule} from '@angular/material/bu
 @Component({
   selector: 'app-filters',
   standalone: true,
-  imports: [MatAutocompleteModule,MatButtonToggleModule,  MatInputModule, MatButtonModule, MatIconModule, MatMenuModule, MatFormFieldModule, FormsModule, ReactiveFormsModule, AsyncPipe],
+  imports: [MatAutocompleteModule,MatButtonToggleModule, CurrencyPipe,  MatInputModule, MatButtonModule, MatIconModule, MatMenuModule, MatFormFieldModule, FormsModule, ReactiveFormsModule, AsyncPipe],
   templateUrl: './filters.component.html',
   styleUrl: './filters.component.css'
 })

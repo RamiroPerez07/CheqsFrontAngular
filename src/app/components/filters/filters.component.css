@@ -11,3 +11,37 @@
   justify-content: end;
   flex-direction: row;
 }
+
+.txt-button{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.toggle-view{
+  margin-left: 10px !important;
+}
+
+.business-filter{
+  min-width: 300px;
+}
+
+.business-info{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.balance-container{
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.balance-container span{
+  display: contents;
+}
+
+.small-icon {
+  transform: scale(0.8);
+}

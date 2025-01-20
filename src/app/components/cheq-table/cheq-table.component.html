@@ -7,11 +7,15 @@
       <mat-icon>delete</mat-icon>
       <span>Eliminar</span>
     </button>
+    <button (click)="changeCheqState(2)" mat-menu-item [disabled]="cheqSelection.isEmpty() || hasNoOverdueChecks(cheqSelection.selected) || !areAllCheqsInPortfolio(cheqSelection.selected)">
+      <mat-icon>account_balance</mat-icon>
+      <span>Marcar como "En banco"</span>
+    </button>
+    <button (click)="changeCheqState(3)" mat-menu-item [disabled]="cheqSelection.isEmpty() || !areAllCheqsInBank(cheqSelection.selected)">
+      <mat-icon>attach_money</mat-icon>
+      <span>Marcar como "Depositado"</span>
+    </button>
     <!--
-      <button mat-menu-item disabled>
-        <mat-icon>voicemail</mat-icon>
-        <span>Check voice mail</span>
-      </button>
       <button mat-menu-item>
         <mat-icon>notifications_off</mat-icon>
         <span>Disable alerts</span>

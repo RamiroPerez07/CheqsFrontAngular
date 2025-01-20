@@ -4,6 +4,7 @@
   <form action="" [formGroup]="cheqGroupControl">
 
     <div class="row-form-field-container">
+
       <!-- Issue Date -->
       <mat-form-field>
         <mat-label>Fecha Emisión</mat-label>
@@ -19,20 +20,19 @@
         }
       </mat-form-field>
 
-      <!-- Cheq Type -->
+      <!-- Due Date -->
+
       <mat-form-field>
-        <mat-label>Tipo de cheque</mat-label>
-        <input type="text" placeholder="Elegir" aria-label="Tipo de cheque" matInput formControlName="cheqTypeControl"
-          [matAutocomplete]="autoType">
-        <mat-autocomplete #autoType="matAutocomplete" [displayWith]="cheqTypesDisplayFn">
-          @for (cheqType of filteredCheqTypes | async; track cheqType) {
-          <mat-option [value]="cheqType">{{cheqType.typeName}}</mat-option>
-          }
-        </mat-autocomplete>
-        @if(cheqGroupControl.get('cheqTypeControl')?.hasError('invalidType') && cheqGroupControl.get('cheqTypeControl')?.touched){
-          <mat-error>
-            Elija un tipo válido
-          </mat-error>
+        <mat-label>Fecha Vto</mat-label>
+        <input matInput [matDatepicker]="pickerVto" formControlName="dueDateControl">
+        <mat-hint>DD/MM/AAAA</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="pickerVto"></mat-datepicker-toggle>
+        <mat-datepicker #pickerVto></mat-datepicker>
+        @if(cheqGroupControl.get('dueDateControl')?.hasError('required') &&
+        cheqGroupControl.get('dueDateControl')?.touched){
+        <mat-error>
+          La fecha de vencimiento es obligatoria
+        </mat-error>
         }
       </mat-form-field>
 
@@ -54,23 +54,23 @@
         }
       </mat-form-field>
 
-
-      <!-- Due Date -->
-
+      <!-- Cheq Type -->
       <mat-form-field>
-        <mat-label>Fecha Vto</mat-label>
-        <input matInput [matDatepicker]="pickerVto" formControlName="dueDateControl">
-        <mat-hint>DD/MM/AAAA</mat-hint>
-        <mat-datepicker-toggle matIconSuffix [for]="pickerVto"></mat-datepicker-toggle>
-        <mat-datepicker #pickerVto></mat-datepicker>
-        @if(cheqGroupControl.get('dueDateControl')?.hasError('required') &&
-        cheqGroupControl.get('dueDateControl')?.touched){
-        <mat-error>
-          La fecha de vencimiento es obligatoria
-        </mat-error>
+        <mat-label>Tipo de cheque</mat-label>
+        <input type="text" placeholder="Elegir" aria-label="Tipo de cheque" matInput formControlName="cheqTypeControl"
+          [matAutocomplete]="autoType">
+        <mat-autocomplete #autoType="matAutocomplete" [displayWith]="cheqTypesDisplayFn">
+          @for (cheqType of filteredCheqTypes | async; track cheqType) {
+          <mat-option [value]="cheqType">{{cheqType.typeName}}</mat-option>
+          }
+        </mat-autocomplete>
+        @if(cheqGroupControl.get('cheqTypeControl')?.hasError('invalidType') && cheqGroupControl.get('cheqTypeControl')?.touched){
+          <mat-error>
+            Elija un tipo válido
+          </mat-error>
         }
       </mat-form-field>
-
+      
     </div>
 
     <mat-form-field>

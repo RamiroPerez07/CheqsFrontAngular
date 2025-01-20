@@ -3,11 +3,17 @@ header{
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: rgb(234,234,234);
 }
 
 .header-content{
+  min-height: 60px;
   width: 100%;
   max-width: 1300px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 10px;
 }
 
 .action-buttons{
@@ -21,4 +27,29 @@ header{
 
 .panel-description{
   justify-content: flex-end !important;
+}
+
+h1{
+  font-weight: 400;
+  font-size: 1rem;
+  display: contents;
+}
+
+.user-profile{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.user-profile-img{
+  border-radius: 100%;
+  background-color: rgb(206,206,206);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-right: 5px;
+  width: 30px;
+  height: 30px;
 }

@@ -14,6 +14,8 @@ export class CheqsServiceService {
 
   private readonly _urlDeleteCheq = "http://localhost:5134/api/Cheqs";
 
+  private readonly _urlChangeCheqState = "http://localhost:5134/api/Cheqs/ChangeStateId";
+
   private readonly _http = inject(HttpClient)
 
   public cheqsDetail = new BehaviorSubject<ICheqDetail[]>([]);
@@ -106,5 +108,9 @@ export class CheqsServiceService {
   deleteCheqs(cheqs: ICheqDetail[]){
     const ids = [...cheqs.map(ch => ch.cheqId)]
     return this._http.delete<ICheqDetail[]>(this._urlDeleteCheq, {body: ids})
+  }
+
+  changeCheqsState(cheqIds: number[], newStateId: number){
+    return this._http.put(this._urlChangeCheqState, {cheqIds, newStateId})
   }
 }

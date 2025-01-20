@@ -1,31 +1,46 @@
 <div class="filter-panel">
-  <form class="filters">
-    <mat-form-field class="business-filter">
-      <mat-label>Empresa</mat-label>
-      <input type="text" matInput [formControl]="businessControl" [matAutocomplete]="auto">
-      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-        @for (option of filteredOptions | async; track option) {
-          <mat-option [value]="option">{{option.businessName}}</mat-option>
-        }
-      </mat-autocomplete>
-      <!-- Mostrar el error si el campo está vacío -->
-       @if(businessControl.hasError('invalidBusiness') && businessControl.touched){
-         <mat-error>
-           Elija una opción válida
-         </mat-error>
-       }
-    </mat-form-field>
-  </form>
+  <div class="business-info">
+    <div class="filters">
+      <mat-form-field class="business-filter">
+        <mat-label>Empresa</mat-label>
+        <input type="text" matInput [formControl]="businessControl" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          @for (option of filteredOptions | async; track option) {
+            <mat-option [value]="option">{{option.businessName}}</mat-option>
+          }
+        </mat-autocomplete>
+        <!-- Mostrar el error si el campo está vacío -->
+         @if(businessControl.hasError('invalidBusiness') && businessControl.touched){
+           <mat-error>
+             Elija una opción válida
+           </mat-error>
+         }
+      </mat-form-field>
+    </div>
+    <div class="balance-container">
+      <span>Saldo: 
+        <span>{{10000 | currency}}</span>
+        <button mat-icon-button aria-label="Edit-balance" class="small-icon">
+          <mat-icon >edit</mat-icon>
+        </button>
+      </span>
+    </div>
+  </div>
   <div class="filter-options">
+    
+    <button mat-raised-button (click)="openDialog()">
+      <span class="txt-button">
+        <mat-icon>note_add</mat-icon>
+        Agregar Cheque
+      </span>
+    </button>
 
     <!-- Boton de selección de vista -->
 
-    <mat-button-toggle-group name="toggle-view" aria-label="toggle-view" (change)="toggleView($event)" value="lista">
+    <mat-button-toggle-group class="toggle-view" name="toggle-view" aria-label="toggle-view" (change)="toggleView($event)" value="lista">
       <mat-button-toggle value="lista">Lista</mat-button-toggle>
       <mat-button-toggle value="grupos">Grupos</mat-button-toggle>
     </mat-button-toggle-group>
 
-
-    <button mat-button (click)="openDialog()">Agregar Cheque</button>
   </div>
 </div>

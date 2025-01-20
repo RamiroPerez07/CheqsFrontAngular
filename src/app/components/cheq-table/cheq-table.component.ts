@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { Console } from 'node:console';
 
 @Component({
   selector: 'app-cheq-table',
@@ -82,6 +83,32 @@ export class CheqTableComponent implements OnChanges{
         this.toastSvc.error(err, "Error");
       }
     });
+  }
+
+  hasNoOverdueChecks(cheqs: ICheqDetail[]): boolean {
+    return cheqs.some(cheq => new Date(cheq.dueDate).setHours(0,0,0,0) > new Date().setHours(0,0,0,0));
+  }
+
+  areAllCheqsInPortfolio(cheqs: ICheqDetail[]): boolean{
+    return cheqs.every(cheq => cheq.stateId === 1);
+  }
+
+  areAllCheqsInBank(cheqs: ICheqDetail[]): boolean{
+    return cheqs.every(cheq => cheq.stateId === 2);
+  }
+
+  changeCheqState(newStateId: number){
+    const cheqIds : number[] = [...this.cheqSelection.selected.map(cheq => cheq.cheqId)]
+    this.cheqsSvc.changeCheqsState(cheqIds,newStateId).subscribe({
+      next: () => {
+        this.toastSvc.success("Estado actualizado correctamente", "Actualización");
+        this.updateCheqs();
+        this.cheqSelection.clear();
+      },
+      error: (err) => {
+        this.toastSvc.error(err, "Error");
+      }
+    })
   }
 
 }
