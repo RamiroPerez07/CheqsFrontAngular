@@ -9,7 +9,7 @@ import {_MatInternalFormField} from '@angular/material/core';
 // Para la localización en español
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { LOCALE_ID } from '@angular/core';
-import { AsyncPipe, JsonPipe, registerLocaleData } from '@angular/common';
+import { AsyncPipe, registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 // the `default as` syntax.

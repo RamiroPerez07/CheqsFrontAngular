@@ -9,11 +9,12 @@ import {MatAccordion, MatExpansionModule} from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CurrencyPipe, NgClass } from '@angular/common';
+import { LoginComponent } from "./components/login/login.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, FiltersComponent, CheqTableComponent, MatExpansionModule, MatIconModule, MatButtonModule, CurrencyPipe, NgClass],
+  imports: [RouterOutlet, FiltersComponent, CheqTableComponent, MatExpansionModule, MatIconModule, MatButtonModule, CurrencyPipe, NgClass, LoginComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

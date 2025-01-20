@@ -9,6 +9,7 @@
   </div>
 </header>
 <main class="main">
+  <app-login />
   <app-filters (changeViewMode)="onChangeViewMode($event)" />
   @if(viewMode === "lista"){
     <app-cheq-table [cheqsDetailData]="cheqsDetailData" />

@@ -12,11 +12,6 @@
   flex-direction: row;
 }
 
-.txt-button{
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
 
 .toggle-view{
   margin-left: 10px !important;

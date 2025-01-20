@@ -16,3 +16,9 @@ main{
 .negative{
   color: red !important;
 }
+
+.icon-txt-button{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
