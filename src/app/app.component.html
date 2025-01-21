@@ -2,40 +2,17 @@
   <div class="header-content">
     <img src="#" alt="Icon">
     <h1>Cascada de cheques</h1>
-    <div class="user-profile">
-      <div class="user-profile-img">R</div>
-      <span>Ramiro</span>
-    </div>
+    @if (user) {
+      <div class="user-profile">
+        <div class="user-profile-img">{{user.username.slice(0,1).toUpperCase()}}</div>
+        <span>{{user.username}}</span>
+      </div>
+    }
   </div>
 </header>
 <main class="main">
-  <app-login />
-  <app-filters (changeViewMode)="onChangeViewMode($event)" />
-  @if(viewMode === "lista"){
-    <app-cheq-table [cheqsDetailData]="cheqsDetailData" />
-  }@else {
-    <div class="action-buttons">
-      <button mat-button (click)="accordion().openAll()">Expandir todas</button>
-      <button mat-button (click)="accordion().closeAll()">Contraer todas</button>
-    </div>
-    <mat-accordion class="example-headers-align" multi>
-      @for(cheqs of groupedCheqsDetailData; track cheqs.period){
-          <mat-expansion-panel class="accordion-panel">
-            <!--Header-->
-            <mat-expansion-panel-header>
-              <mat-panel-title> {{cheqs.period}} </mat-panel-title>
-              <mat-panel-description class="panel-description" [ngClass]="{'negative': ((cheqs.cheqs.at(-1)?.accumulatedAmount) ?? 0) < 0}">
-                Saldo: {{cheqs.cheqs.at(-1)?.accumulatedAmount | currency}}
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-            <!--Content-->
-            <app-cheq-table [cheqsDetailData]="cheqs.cheqs" />
-          </mat-expansion-panel>
-        }
-    </mat-accordion>
-  }
+  <router-outlet />
 </main>
 
 
 
-<router-outlet />

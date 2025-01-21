@@ -8,6 +8,7 @@ import { AuthServiceService } from '../../services/auth-service.service';
 import { ToastrService } from 'ngx-toastr';
 import { JsonPipe } from '@angular/common';
 import { IUser } from '../../interfaces/auth.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,8 @@ export class LoginComponent {
   authSvc = inject(AuthServiceService);
 
   toastSvc = inject(ToastrService);
+
+  router = inject(Router);  // Inyectamos el servicio Router
 
   loginGroupControl = new FormGroup({
     usernameControl: new FormControl("", [Validators.required]),
@@ -39,6 +42,7 @@ export class LoginComponent {
     this.authSvc.login(username, password).subscribe({
       next: (user: IUser) => {
         this.user = user;
+        this.router.navigate(['']);
       },
       error: (err) => {
         this.toastSvc.error(err, "Error");
