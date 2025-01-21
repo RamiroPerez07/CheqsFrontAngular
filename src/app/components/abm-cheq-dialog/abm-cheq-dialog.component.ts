@@ -75,17 +75,22 @@ interface IDialogData {
   styleUrl: './abm-cheq-dialog.component.css'
 })
 export class AbmCheqDialogComponent implements OnInit {
-  options = ["Opcion 1", "Opcion 2"]
 
   readonly dialogRef = inject(MatDialogRef<AbmCheqDialogComponent>);
+
   readonly data = inject<IDialogData>(MAT_DIALOG_DATA);
+
   readonly typesSvc = inject(TypesServiceService);
+
   readonly entitiesSvc = inject(EntitiesServiceService);
 
-  cheqTypes! : ICheqType[];
-  filteredCheqTypes! : Observable<ICheqType[]>;
-  entities! : IEntity[];
-  filteredEntities! : Observable<IEntity[]>;
+  public cheqTypes! : ICheqType[];
+
+  public filteredCheqTypes! : Observable<ICheqType[]>;
+
+  public entities! : IEntity[];
+
+  public filteredEntities! : Observable<IEntity[]>;
 
   ngOnInit(): void {
     this.typesSvc.getCheqTypes().subscribe({

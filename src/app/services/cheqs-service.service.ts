@@ -8,7 +8,9 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 })
 export class CheqsServiceService {
 
-  private readonly _urlCheqsDetail = "http://localhost:5134/api/Cheqs/getCheqsWithDetails";
+  private _getCheqsDetailUrl(userId: number, bankId: number, businessId: number):string{
+    return `http://localhost:5134/api/Cheqs/getCheqsWithDetails?userId=${userId}&bankId=${bankId}&businessId=${businessId}`
+  };
 
   private readonly _urlCreateCheq = "http://localhost:5134/api/Cheqs";
 
@@ -87,8 +89,8 @@ export class CheqsServiceService {
 
   constructor() {}
 
-  getCheqsDetail():Observable<ICheqDetail[]>{
-    return this._http.get<ICheqDetail[]>(this._urlCheqsDetail).pipe(
+  getCheqsDetail(userId: number, bankId: number, businessId: number):Observable<ICheqDetail[]>{
+    return this._http.get<ICheqDetail[]>(this._getCheqsDetailUrl(userId,bankId,businessId)).pipe(
       tap((cheqDetails: ICheqDetail[]) => {
 
         let cheqs = this._sortData(cheqDetails);

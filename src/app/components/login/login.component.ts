@@ -43,9 +43,6 @@ export class LoginComponent {
       next: (user: IUser) => {
         this.user = user;
         this.router.navigate(['']);
-      },
-      error: (err) => {
-        this.toastSvc.error(err, "Error");
       }
     })
   }

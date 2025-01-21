@@ -22,42 +22,36 @@ export class CheqsCascadeMainComponent implements OnInit {
 
 accordion = viewChild.required(MatAccordion);
 
-  viewMode : "lista" | "grupos" = "lista";
+  public viewMode : "lista" | "grupos" = "lista";
+
+  readonly cheqsSvc = inject(CheqsServiceService);
+  
+  readonly toastSvc = inject(ToastrService);
+
+  readonly authSvc = inject(AuthServiceService);
+
+  readonly routerSvc = inject(Router);
+
+  public cheqsDetailData! : ICheqDetail[];
+
+  public groupedCheqsDetailData! : IGroupedCheqs[];
+
+  public initialBalance : number = 10000;
 
   onChangeViewMode(event: "lista" | "grupos" ){
     this.viewMode = event ;
   }
 
-  cheqsSvc = inject(CheqsServiceService);
-  
-  toastSvc = inject(ToastrService);
-
-  authSvc = inject(AuthServiceService);
-
-  routerSvc = inject(Router);
-
-  cheqsDetailData! : ICheqDetail[];
-
-  groupedCheqsDetailData! : IGroupedCheqs[];
-
-  initialBalance : number = 10000;
-
   getCheqs(){
     this.cheqsSvc.$cheqsDetail.subscribe({
       next: (cheqs) => {
         this.cheqsDetailData = [...cheqs];
-      },
-      error: (err) => {
-        this.toastSvc.error(err,"Error");
       }
     })
 
     this.cheqsSvc.$groupedCheqsDetail.subscribe({
       next: (cheqs) => {
         this.groupedCheqsDetailData = [...cheqs];
-      },
-      error: (err) => {
-        this.toastSvc.error(err,"Error");
       }
     })
   }
@@ -65,14 +59,13 @@ accordion = viewChild.required(MatAccordion);
 
   ngOnInit(): void {
 
-    this.cheqsSvc.getCheqsDetail().subscribe({
-      next : () => {
-        this.getCheqs();
-      },
-      error: (err) => {
-        this.toastSvc.error(err,"Error");
-      }
-    });
+    this.getCheqs();
+
+    // this.cheqsSvc.getCheqsDetail().subscribe({
+    //   next : () => {
+    //     this.getCheqs();
+    //   }
+    // });
 
     //Que no me deje usar la aplicacion si no estoy autenticado.
     this.authSvc.$user.subscribe({
@@ -80,9 +73,6 @@ accordion = viewChild.required(MatAccordion);
         if (!user) {
           this.routerSvc.navigate(["login"]);
         }
-      },
-      error: (err) => {
-        this.toastSvc.error(err,"Error");
       }
     })
 

@@ -13,9 +13,23 @@
   flex-direction: row;
 }
 
+.filters{
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.filters>.field{
+  margin-right: 10px;
+}
+
 
 .toggle-view{
   margin-left: 10px !important;
+}
+
+.bank-filter{
+  min-width: 250px;
 }
 
 .business-filter{
@@ -32,6 +46,14 @@
   margin-left: 10px;
   display: flex;
   align-items: center;
+}
+
+.balance-container>span{
+  font-weight: 300;
+}
+
+.balance{
+  font-weight: 500;
 }
 
 .balance-container span{

@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import {SelectionModel} from '@angular/cdk/collections';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatCheckboxModule} from '@angular/material/checkbox';
@@ -9,7 +9,6 @@ import { ToastrService } from 'ngx-toastr';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { Console } from 'node:console';
 
 @Component({
   selector: 'app-cheq-table',
@@ -22,26 +21,23 @@ export class CheqTableComponent implements OnChanges{
 
   @Input() cheqsDetailData! : ICheqDetail[];
 
+  readonly cheqsSvc = inject(CheqsServiceService);
+  
+  readonly toastSvc = inject(ToastrService);
+  
+  public displayedColumns: string[] = ['select', 'issueDate', 'cheqNumber', 'entity', 'dueDate', 'type', 'state', 'amount', 'accumulatedAmount'];
+  
+  public dataSource = new MatTableDataSource<ICheqDetail>(this.cheqsDetailData);
+  
+  public cheqSelection = new SelectionModel<ICheqDetail>(true, [])
+  
   ngOnChanges(changes: SimpleChanges): void {
     if (!changes['cheqsDetailData'] || !Array.isArray(changes['cheqsDetailData'].currentValue)) return;
     this.dataSource.data = changes['cheqsDetailData'].currentValue as ICheqDetail[];
   }
 
-  displayedColumns: string[] = ['select', 'issueDate', 'cheqNumber', 'entity', 'dueDate', 'type', 'state', 'amount', 'accumulatedAmount'];
-
-  dataSource = new MatTableDataSource<ICheqDetail>(this.cheqsDetailData);
-
-  cheqsSvc = inject(CheqsServiceService);
-
-  toastSvc = inject(ToastrService);
-
-
   updateCheqs(){
-    this.cheqsSvc.getCheqsDetail().subscribe({
-      error: (err) => {
-        this.toastSvc.error(err, "Error");
-      }
-    });
+    //this.cheqsSvc.getCheqsDetail().subscribe();
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -69,8 +65,6 @@ export class CheqTableComponent implements OnChanges{
     return `${this.cheqSelection.isSelected(row) ? 'deselect' : 'select'} row ${row.cheqNumber}`;
   }
 
-  cheqSelection = new SelectionModel<ICheqDetail>(true, [])
-
   deleteCheqs(){
     if (this.cheqSelection.isEmpty()) return
     this.cheqsSvc.deleteCheqs(this.cheqSelection.selected).subscribe({
@@ -78,9 +72,6 @@ export class CheqTableComponent implements OnChanges{
         this.toastSvc.success("Eliminar", "Cheques eliminados correctamente");
         this.updateCheqs();
         this.cheqSelection.clear();
-      },
-      error: (err) => {
-        this.toastSvc.error(err, "Error");
       }
     });
   }
@@ -104,9 +95,6 @@ export class CheqTableComponent implements OnChanges{
         this.toastSvc.success("Estado actualizado correctamente", "Actualización");
         this.updateCheqs();
         this.cheqSelection.clear();
-      },
-      error: (err) => {
-        this.toastSvc.error(err, "Error");
       }
     })
   }
