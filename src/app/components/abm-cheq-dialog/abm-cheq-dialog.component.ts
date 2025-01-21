@@ -45,7 +45,7 @@ interface IDialogData {
   issueDate?: Date;
   dueDate?: Date;
   stateId: number;
-  businessUserId: number;
+  bankBusinessUserId: number;
   createdAt? : Date;
 }
 
@@ -185,7 +185,7 @@ export class AbmCheqDialogComponent implements OnInit {
         entityId : (this.cheqGroupControl.get("entityControl")?.value as IEntity).id,
         typeId : (this.cheqGroupControl.get("cheqTypeControl")?.value as ICheqType).id,
         stateId : this.data.stateId,
-        businessUserId: this.data.businessUserId,
+        bankBusinessUserId: this.data.bankBusinessUserId,
         issueDate: moment(this.cheqGroupControl.get("issueDateControl")?.value).toDate(),
         dueDate: this.cheqGroupControl.get("dueDateControl")?.value,
         amount: this.cheqGroupControl.get("cheqAmountControl")?.value,

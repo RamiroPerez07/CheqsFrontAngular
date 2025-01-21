@@ -1,0 +1,12 @@
+.action-buttons{
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .accordion-panel{
+    margin-bottom: 5px;
+  }
+  
+  .panel-description{
+    justify-content: flex-end !important;
+  }

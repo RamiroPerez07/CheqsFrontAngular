@@ -11,7 +11,7 @@ import { AsyncPipe, CurrencyPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { AbmCheqDialogComponent } from '../abm-cheq-dialog/abm-cheq-dialog.component';
-import { ICheq, ICheqDetail, IGroupedCheqs } from '../../interfaces/cheqDetail.interface';
+import { ICheq, ICheqDetail } from '../../interfaces/cheqDetail.interface';
 import { CheqsServiceService } from '../../services/cheqs-service.service';
 import { ToastrService } from 'ngx-toastr';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -96,7 +96,7 @@ export class FiltersComponent implements OnInit {
       data: {
         title: "Nuevo cheque",
         stateId: 1,
-        businessUserId : 1,
+        bankBusinessUserId : 1,
       }
     })
 

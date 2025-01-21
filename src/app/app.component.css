@@ -3,7 +3,8 @@ header{
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgb(234,234,234);
+  background-color: rgb(250,250,250);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
 }
 
 .header-content{
@@ -13,25 +14,13 @@ header{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px 10px;
+  padding: 5px 25px;
 }
 
-.action-buttons{
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
 
-.accordion-panel{
-  margin-bottom: 5px;
-}
-
-.panel-description{
-  justify-content: flex-end !important;
-}
-
-h1{
-  font-weight: 400;
-  font-size: 1rem;
+h1.app-title{
+  font-weight: 300;
+  font-size: 0.9rem;
   display: contents;
 }
 

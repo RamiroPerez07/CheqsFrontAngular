@@ -18,6 +18,8 @@ export interface ICheqDetail {
   stateName: string;
   entityId: number;
   entityName: string;
+  BankId: number;
+  BankName: string;
   //se genera en la interfaz
   accumulatedAmount?: number;
 }
