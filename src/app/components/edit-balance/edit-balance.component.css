@@ -1,0 +1,16 @@
+.edit-balance-content{
+    padding: 10px 0px 0px 24px !important;
+    min-width: 400px !important;
+}
+
+p{
+    padding-left: 24px;
+}
+
+.balance-field{
+    margin-bottom: 25px;
+}
+
+mat-dialog-actions{
+    justify-content: right !important;
+  }

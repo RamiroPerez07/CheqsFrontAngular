@@ -43,6 +43,7 @@ export class LoginComponent {
       next: (user: IUser) => {
         this.user = user;
         this.router.navigate(['']);
+        this.toastSvc.success("Inicio de Sesión Exitosa","Bienvenido")
       }
     })
   }

@@ -8,8 +8,8 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 })
 export class CheqsServiceService {
 
-  private _getCheqsDetailUrl(userId: number, bankId: number, businessId: number):string{
-    return `http://localhost:5134/api/Cheqs/getCheqsWithDetails?userId=${userId}&bankId=${bankId}&businessId=${businessId}`
+  private _getCheqsDetailUrl(bankId: number, businessId: number):string{
+    return `http://localhost:5134/api/Cheqs/getCheqsWithDetails?bankId=${bankId}&businessId=${businessId}`
   };
 
   private readonly _urlCreateCheq = "http://localhost:5134/api/Cheqs";
@@ -30,8 +30,8 @@ export class CheqsServiceService {
 
   initialBalance = 10000;
 
-  private _calculateAccumulatedAmount(cheqsDetailData: ICheqDetail[]) : ICheqDetail[] {
-    let accumulatedAmount = this.initialBalance;
+  private _calculateAccumulatedAmount(cheqsDetailData: ICheqDetail[], initialBalance: number) : ICheqDetail[] {
+    let accumulatedAmount = initialBalance;
     // Itera sobre los datos y acumula el valor de cada cheque
     cheqsDetailData.forEach(row => {
       row['accumulatedAmount'] = accumulatedAmount + row.amount;
@@ -89,18 +89,23 @@ export class CheqsServiceService {
 
   constructor() {}
 
-  getCheqsDetail(userId: number, bankId: number, businessId: number):Observable<ICheqDetail[]>{
-    return this._http.get<ICheqDetail[]>(this._getCheqsDetailUrl(userId,bankId,businessId)).pipe(
+  getCheqsDetail(bankId: number, businessId: number, initialBalance: number):Observable<ICheqDetail[]>{
+    return this._http.get<ICheqDetail[]>(this._getCheqsDetailUrl(bankId,businessId)).pipe(
       tap((cheqDetails: ICheqDetail[]) => {
 
         let cheqs = this._sortData(cheqDetails);
-        cheqs = this._calculateAccumulatedAmount(cheqs);
+        cheqs = this._calculateAccumulatedAmount(cheqs, initialBalance);
         let groupedCheqsDetail = this._groupAndSortCheqs(cheqs);
 
         this.cheqsDetail.next(cheqs);
         this.groupedCheqsDetail.next(groupedCheqsDetail);
       })
     )
+  }
+
+  hideCheqs(){
+    this.cheqsDetail.next([]);
+    this.groupedCheqsDetail.next([]);
   }
 
   createCheq(cheq: ICheq):Observable<ICheq>{

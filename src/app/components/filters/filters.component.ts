@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import {AbstractControl, FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { map, Observable, of, startWith } from 'rxjs';
-import { AsyncPipe, CurrencyPipe, JsonPipe } from '@angular/common';
+import { AsyncPipe, CurrencyPipe, DatePipe, JsonPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { AbmCheqDialogComponent } from '../abm-cheq-dialog/abm-cheq-dialog.component';
@@ -21,11 +21,15 @@ import { IUser } from '../../interfaces/auth.interface';
 import { IBusiness } from '../../interfaces/business.interface';
 import { IBank } from '../../interfaces/bank.interface';
 import { BankServiceService } from '../../services/bank-service.service';
+import { CheqsFilterServiceService } from '../../services/cheqs-filter-service.service';
+import { BalanceServiceService } from '../../services/balance-service.service';
+import { IBalance } from '../../interfaces/balance.interface';
+import { EditBalanceComponent } from '../edit-balance/edit-balance.component';
 
 @Component({
   selector: 'app-filters',
   standalone: true,
-  imports: [MatAutocompleteModule,MatButtonToggleModule, CurrencyPipe, JsonPipe	,  MatInputModule, MatButtonModule, MatIconModule, MatMenuModule, MatFormFieldModule, FormsModule, ReactiveFormsModule, AsyncPipe],
+  imports: [MatAutocompleteModule,MatButtonToggleModule, CurrencyPipe, DatePipe,  MatInputModule, MatButtonModule, MatIconModule, MatMenuModule, MatFormFieldModule, FormsModule, ReactiveFormsModule, AsyncPipe],
   templateUrl: './filters.component.html',
   styleUrl: './filters.component.css'
 })
@@ -42,6 +46,10 @@ export class FiltersComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   
   readonly cheqsSvc = inject(CheqsServiceService);
+
+  readonly cheqsFilterSvc = inject(CheqsFilterServiceService);
+
+  readonly balanceSvc = inject(BalanceServiceService);
 
   public viewMode: "lista" | "grupos" = "lista";
   
@@ -65,10 +73,11 @@ export class FiltersComponent implements OnInit {
 
   public user! : IUser | null;
 
-  public filterSelection : {
-    business: IBusiness | null,
-    bank: IBank | null,
-  } = {business: null, bank: null}
+  public selectedBusiness! : IBusiness | null;
+
+  public selectedBank! : IBank | null;
+
+  public balance! : IBalance | null;
 
   // Validador personalizado para asegurar que el valor es un IBusiness
   businessValidator(control: AbstractControl): { [key: string]: boolean } | null {
@@ -125,6 +134,23 @@ export class FiltersComponent implements OnInit {
         this.cheqsDetail = cheqsDetail;
       }
     })
+
+    this.cheqsFilterSvc.$filterSelection.subscribe({
+      next: (filterSelection) => {
+
+        this.selectedBank = filterSelection.bank;
+
+        this.selectedBusiness = filterSelection.business;
+
+        if(this.selectedBank && this.selectedBusiness){
+          this.updateBalance();
+
+        }else{
+          this.cheqsSvc.hideCheqs();   // Si no tengo empresa y banco elegido, esconder los cheques.
+        }
+      }
+    })
+
     
   }
 
@@ -142,7 +168,7 @@ export class FiltersComponent implements OnInit {
       startWith(''),
       map(value => {
         const name = typeof value === 'string' ? value : value?.businessName;
-        this.filterSelection.business = null;
+        this.cheqsFilterSvc.setBusiness(null);
         this.bankControl.reset(); //El combo de bancos se resetea porque cambia la opcion
         this.filteredBankOptions = of([]) //Las opciones filtradas se limpian por si quedaron
         return name ? this._filter(name as string) : [...this.businessOptions];
@@ -156,7 +182,7 @@ export class FiltersComponent implements OnInit {
       this.bankSvc.getBanksByUserAndBusiness(this.user?.userId, business.businessId).subscribe({
         next: (banks : IBank[]) => {
           this.bankOptions = banks;
-          this.filterSelection.business = business;
+          this.cheqsFilterSvc.setBusiness(business);
           this._configureBankFilteredOptions();
         }
       })
@@ -165,8 +191,8 @@ export class FiltersComponent implements OnInit {
 
   onSelectBank(event: MatAutocompleteSelectedEvent){
     const bank = event.option.value as IBank
-    if(this.user && bank && this.filterSelection.business){
-      this.filterSelection.bank = bank;
+    if (this.user && bank){
+      this.cheqsFilterSvc.setBank(bank);
     }
   }
 
@@ -175,18 +201,32 @@ export class FiltersComponent implements OnInit {
       startWith(''),
       map(value => {
         const name = typeof value === 'string' ? value : value?.bankName;
+        this.cheqsFilterSvc.setBank(null);
         return name ? this._filterBank(name as string) : [...this.bankOptions];
       }),
     );
   }
 
+  updateBalance(){
+    if(this.user && this.selectedBank && this.selectedBusiness){
+      const bankId = this.selectedBank.bankId;
+      const businessId = this.selectedBusiness.businessId;
+      this.balanceSvc.getBalanceByBankIdAndBusinessId(bankId,businessId).subscribe({
+        next: (balance) => {
+          this.balance = balance
+          this.updateCheqs();
+        }
+      });
+    }
+  }
+
 
   updateCheqs(){
-    if(this.user && this.filterSelection.bank && this.filterSelection.business){
-      const userId = this.user.userId;
-      const bankId = this.filterSelection.bank.bankId;
-      const businessId = this.filterSelection.business.businessId;
-      this.cheqsSvc.getCheqsDetail(userId,bankId,businessId).subscribe()
+    if(this.user && this.selectedBank && this.selectedBusiness && this.balance){
+      const bankId = this.selectedBank.bankId;
+      const businessId = this.selectedBusiness.businessId;
+      const balanceAmount = this.balance.balance;
+      this.cheqsSvc.getCheqsDetail(bankId,businessId,balanceAmount).subscribe()
     }
   }
 
@@ -196,7 +236,6 @@ export class FiltersComponent implements OnInit {
       data: {
         title: "Nuevo cheque",
         stateId: 1,
-        bankBusinessUserId : 1,
       }
     })
 
@@ -208,6 +247,20 @@ export class FiltersComponent implements OnInit {
           this.toastSvc.success("Cheque creado correctamente","Nuevo cheque")
         }
       });
+    })
+  }
+
+  openEditBalanceDialog():void{
+    const dialogRef = this.dialog.open(EditBalanceComponent, {
+      data: {
+        balance: this.balance,
+        bank: this.selectedBank,
+        business: this.selectedBusiness
+      }
+    })
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      console.log(result)
     })
   }
 

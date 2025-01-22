@@ -45,11 +45,20 @@
 .balance-container{
   margin-left: 10px;
   display: flex;
-  align-items: center;
+  align-items: start;
+  flex-direction: column;
+  justify-content: start;
 }
 
-.balance-container>span{
+.updated-at-txt{
+  font-size: 0.6rem;
   font-weight: 300;
+}
+
+.balance-container>div{
+  font-weight: 300;
+  display: flex;
+  align-items: center;
 }
 
 .balance{

@@ -10,6 +10,9 @@ import { CheqsServiceService } from '../../services/cheqs-service.service';
 import { ICheqDetail, IGroupedCheqs } from '../../interfaces/cheqDetail.interface';
 import { AuthServiceService } from '../../services/auth-service.service';
 import { Router } from '@angular/router';
+import { CheqsFilterServiceService } from '../../services/cheqs-filter-service.service';
+import { IBank } from '../../interfaces/bank.interface';
+import { IBusiness } from '../../interfaces/business.interface';
 
 @Component({
   selector: 'app-cheqs-cascade-main',
@@ -32,11 +35,15 @@ accordion = viewChild.required(MatAccordion);
 
   readonly routerSvc = inject(Router);
 
+  readonly cheqsFilterSvc = inject(CheqsFilterServiceService);
+
   public cheqsDetailData! : ICheqDetail[];
 
   public groupedCheqsDetailData! : IGroupedCheqs[];
 
-  public initialBalance : number = 10000;
+  public selectedBank! : IBank | null;
+
+  public selectedBusiness! : IBusiness | null;
 
   onChangeViewMode(event: "lista" | "grupos" ){
     this.viewMode = event ;
@@ -56,16 +63,9 @@ accordion = viewChild.required(MatAccordion);
     })
   }
 
-
   ngOnInit(): void {
 
     this.getCheqs();
-
-    // this.cheqsSvc.getCheqsDetail().subscribe({
-    //   next : () => {
-    //     this.getCheqs();
-    //   }
-    // });
 
     //Que no me deje usar la aplicacion si no estoy autenticado.
     this.authSvc.$user.subscribe({
@@ -73,6 +73,13 @@ accordion = viewChild.required(MatAccordion);
         if (!user) {
           this.routerSvc.navigate(["login"]);
         }
+      }
+    })
+
+    this.cheqsFilterSvc.$filterSelection.subscribe({
+      next: (filterSelection) => {
+        this.selectedBank = filterSelection.bank;
+        this.selectedBusiness = filterSelection.business;
       }
     })
 

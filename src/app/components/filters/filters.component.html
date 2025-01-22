@@ -22,7 +22,7 @@
       <!-- Bank Filter -->
       <mat-form-field class="bank-filter field">
         <mat-label>Banco</mat-label>
-        <input type="text" matInput [formControl]="bankControl" [matAutocomplete]="autoBank" [readonly]="!filterSelection.business">
+        <input type="text" matInput [formControl]="bankControl" [matAutocomplete]="autoBank" [readonly]="!selectedBusiness">
         <mat-autocomplete #autoBank="matAutocomplete" [displayWith]="displayFnBank" (optionSelected)="onSelectBank($event)">
           @for (option of filteredBankOptions | async; track option) {
             <mat-option [value]="option">{{option.bankName}}</mat-option>
@@ -38,30 +38,36 @@
 
     </div>
     <div class="balance-container">
-      <span>Saldo: 
-        <span class="balance">{{10000 | currency}}</span>
-        <button mat-icon-button aria-label="Edit-balance" class="small-icon">
-          <mat-icon >edit</mat-icon>
-        </button>
-      </span>
+      @if(balance && selectedBank && selectedBusiness){
+        <div>Saldo: 
+          <span class="balance">{{(balance ? balance.balance : null) | currency}}</span>
+          <button mat-icon-button aria-label="Edit-balance" class="small-icon" (click)="openEditBalanceDialog()">
+            <mat-icon >edit</mat-icon>
+          </button>
+        </div>
+        <div class="updated-at-txt">
+          Actualizado: {{ balance.updatedAt | date:'HH:mm' }} hs {{ balance.updatedAt | date:'dd/MM/yyyy' }}
+        </div>
+      }
     </div>
   </div>
-  <div class="filter-options">
-    
-    <button mat-raised-button (click)="openDialog()">
-      <span class="icon-txt-button">
-        <mat-icon>note_add</mat-icon>
-        Agregar Cheque
-      </span>
-    </button>
-
-    <!-- Boton de selección de vista -->
-
-    <mat-button-toggle-group class="toggle-view" name="toggle-view" aria-label="toggle-view" (change)="toggleView($event)" value="lista">
-      <mat-button-toggle value="lista">Lista</mat-button-toggle>
-      <mat-button-toggle value="grupos">Grupos</mat-button-toggle>
-    </mat-button-toggle-group>
-
-  </div>
+  @if(selectedBank && selectedBusiness){
+    <div class="filter-options">
+      
+      <button mat-raised-button (click)="openDialog()">
+        <span class="icon-txt-button">
+          <mat-icon>note_add</mat-icon>
+          Agregar Cheque
+        </span>
+      </button>
+  
+      <!-- Boton de selección de vista -->
+  
+      <mat-button-toggle-group class="toggle-view" name="toggle-view" aria-label="toggle-view" (change)="toggleView($event)" value="lista">
+        <mat-button-toggle value="lista">Lista</mat-button-toggle>
+        <mat-button-toggle value="grupos">Grupos</mat-button-toggle>
+      </mat-button-toggle-group>
+  
+    </div>
+  }
 </div>
-{{filterSelection | json}}

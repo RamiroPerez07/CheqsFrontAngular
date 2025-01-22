@@ -23,6 +23,12 @@ import { EntitiesServiceService } from '../../services/entities-service.service'
 import { ICheqType } from '../../interfaces/types.interface';
 import { IEntity } from '../../interfaces/entity.interface';
 import { map, Observable, of, startWith } from 'rxjs';
+import { CheqsFilterServiceService } from '../../services/cheqs-filter-service.service';
+import { AuthServiceService } from '../../services/auth-service.service';
+import { BankBusinessUserServiceService } from '../../services/bank-business-user-service.service';
+import { IUser } from '../../interfaces/auth.interface';
+import { IBusiness } from '../../interfaces/business.interface';
+import { IBank } from '../../interfaces/bank.interface';
 
 // Registrar la localización en español
 registerLocaleData(localeEs);
@@ -45,7 +51,6 @@ interface IDialogData {
   issueDate?: Date;
   dueDate?: Date;
   stateId: number;
-  bankBusinessUserId: number;
   createdAt? : Date;
 }
 
@@ -63,7 +68,7 @@ interface IDialogData {
     MatDialogActions,
     MatDatepickerModule,
     MatAutocompleteModule,
-    AsyncPipe,
+    AsyncPipe
   ],
   providers: [
     provideMomentDateAdapter(MY_DATE_FORMATS),
@@ -84,6 +89,12 @@ export class AbmCheqDialogComponent implements OnInit {
 
   readonly entitiesSvc = inject(EntitiesServiceService);
 
+  readonly cheqsFilterSvc = inject(CheqsFilterServiceService);
+
+  readonly authSvc = inject(AuthServiceService);
+
+  readonly BbuSvc = inject(BankBusinessUserServiceService);
+
   public cheqTypes! : ICheqType[];
 
   public filteredCheqTypes! : Observable<ICheqType[]>;
@@ -91,6 +102,14 @@ export class AbmCheqDialogComponent implements OnInit {
   public entities! : IEntity[];
 
   public filteredEntities! : Observable<IEntity[]>;
+
+  public user! : IUser | null;
+
+  public selectedBusiness! : IBusiness | null;
+
+  public selectedBank! : IBank | null;
+
+  public bbuId! : number | null;
 
   ngOnInit(): void {
     this.typesSvc.getCheqTypes().subscribe({
@@ -107,6 +126,40 @@ export class AbmCheqDialogComponent implements OnInit {
       }
     });
 
+    this.authSvc.$user.subscribe({
+      next: (user: IUser | null) => {
+        this.user = user;
+        this.getFilterSelection();
+      }
+    })
+
+
+  }
+
+  getFilterSelection(){
+    this.cheqsFilterSvc.$filterSelection.subscribe({
+      next: (filterSelection) => {
+        this.selectedBank = filterSelection.bank;
+        this.selectedBusiness = filterSelection.business;
+        this.getBankBusinessUserId()
+      }
+    })
+  }
+
+  getBankBusinessUserId(){
+    const bank = this.selectedBank;
+    const business = this.selectedBusiness;
+    const user = this.user;
+    if (bank && business && user){
+      const bankId = bank.bankId;
+      const businessId = business.businessId;
+      const userId = user.userId;
+      this.BbuSvc.getBankBusinessUserId(bankId, userId, businessId).subscribe({
+        next: (bbuId) => {
+          this.bbuId = bbuId;
+        }
+      })
+    }
   }
 
   private _configureEntityListener(){
@@ -190,7 +243,7 @@ export class AbmCheqDialogComponent implements OnInit {
         entityId : (this.cheqGroupControl.get("entityControl")?.value as IEntity).id,
         typeId : (this.cheqGroupControl.get("cheqTypeControl")?.value as ICheqType).id,
         stateId : this.data.stateId,
-        bankBusinessUserId: this.data.bankBusinessUserId,
+        bankBusinessUserId: this.bbuId,
         issueDate: moment(this.cheqGroupControl.get("issueDateControl")?.value).toDate(),
         dueDate: this.cheqGroupControl.get("dueDateControl")?.value,
         amount: this.cheqGroupControl.get("cheqAmountControl")?.value,

@@ -22,3 +22,7 @@ main{
   align-items: center;
   gap: 5px;
 }
+
+.lf{
+  font-weight: 300;
+}

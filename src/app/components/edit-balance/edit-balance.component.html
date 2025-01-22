@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Editar saldo bancario</h2>
+<p><span class="lf">Empresa: </span>{{data.business?.businessName}}</p>
+<p><span class="lf">Banco: </span>{{data.bank?.bankName}}</p>
+<p><span class="lf">Saldo bancario actual: </span>{{data.balance?.balance | currency}}</p>
+<mat-dialog-content class="edit-balance-content">
+  <!-- <p></p> -->
+  <form action="">
+    <!-- Issue Date -->
+    <mat-form-field class="balance-field">
+        <mat-label>Saldo</mat-label>
+        <input matInput type="number" [formControl]="balanceControl">
+        @if(balanceControl.hasError('required') &&
+        balanceControl.touched){
+        <mat-error>
+          El saldo es obligatorio
+        </mat-error>
+        }
+      </mat-form-field>
+
+      <mat-dialog-actions>
+        <button mat-button (click)="onCloseDialog()">Cancelar</button>
+        <button mat-button (click)="onSubmit()" cdkFocusInitial>Guardar</button>
+      </mat-dialog-actions>
+
+  </form>
+</mat-dialog-content>
