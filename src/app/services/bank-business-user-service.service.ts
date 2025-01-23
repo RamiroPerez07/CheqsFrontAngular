@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 })
 export class BankBusinessUserServiceService {
 
-  readonly _getBankBusinessUserUrl = "http://localhost:5134/api/BankBusinessUsers/by-user-business-bank";
+  private readonly _getBankBusinessUserUrl = "http://localhost:5134/api/BankBusinessUsers/by-user-business-bank";
 
   private readonly _http = inject(HttpClient);
 
@@ -26,4 +26,5 @@ export class BankBusinessUserServiceService {
       )
     )
   }
+
 }

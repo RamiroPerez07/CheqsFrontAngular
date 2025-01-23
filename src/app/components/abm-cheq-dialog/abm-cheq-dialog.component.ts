@@ -14,6 +14,7 @@ import localeEs from '@angular/common/locales/es';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 // the `default as` syntax.
 import moment from 'moment';
+import 'moment/locale/es';
 // tslint:disable-next-line:no-duplicate-imports
 import {default as _rollupMoment} from 'moment';
 import {provideMomentDateAdapter} from '@angular/material-moment-adapter';

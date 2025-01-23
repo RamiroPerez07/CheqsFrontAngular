@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { IBalance } from '../interfaces/balance.interface';
+import { IBalance, IBalanceDetail } from '../interfaces/balance.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +9,8 @@ import { IBalance } from '../interfaces/balance.interface';
 export class BalanceServiceService {
 
   readonly _getBalanceByBankIdAndBusinessIdUrl = "http://localhost:5134/api/BankBusinesses/balance-by-bank-and-business";
+
+  private readonly _updateBalanceUrl = "http://localhost:5134/api/BankBusinesses/update-balance";
 
   readonly _http = inject(HttpClient);
 
@@ -26,6 +28,10 @@ export class BalanceServiceService {
         }
       )
     )
+  }
+
+  editBalance(bankId: number, businessId: number, balance: number, updatedAt: Date) : Observable<IBalanceDetail>{
+    return this._http.put<IBalanceDetail>(this._updateBalanceUrl, {bankId, businessId, balance, updatedAt})
   }
 
 }

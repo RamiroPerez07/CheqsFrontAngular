@@ -40,7 +40,7 @@
     <div class="balance-container">
       @if(balance && selectedBank && selectedBusiness){
         <div>Saldo: 
-          <span class="balance">{{(balance ? balance.balance : null) | currency}}</span>
+          <span class="balance">{{(balance ? balance.balance : null) | currency: "ARS"}}</span>
           <button mat-icon-button aria-label="Edit-balance" class="small-icon" (click)="openEditBalanceDialog()">
             <mat-icon >edit</mat-icon>
           </button>

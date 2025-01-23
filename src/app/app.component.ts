@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AuthServiceService } from './services/auth-service.service';
 import { IUser } from './interfaces/auth.interface';
+import moment from 'moment';
 
 @Component({
   selector: 'app-root',

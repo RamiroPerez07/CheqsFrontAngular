@@ -23,7 +23,7 @@ import { IBank } from '../../interfaces/bank.interface';
 import { BankServiceService } from '../../services/bank-service.service';
 import { CheqsFilterServiceService } from '../../services/cheqs-filter-service.service';
 import { BalanceServiceService } from '../../services/balance-service.service';
-import { IBalance } from '../../interfaces/balance.interface';
+import { IBalance, IBalanceDetail } from '../../interfaces/balance.interface';
 import { EditBalanceComponent } from '../edit-balance/edit-balance.component';
 
 @Component({
@@ -259,8 +259,19 @@ export class FiltersComponent implements OnInit {
       }
     })
 
-    dialogRef.afterClosed().subscribe((result: any) => {
-      console.log(result)
+    dialogRef.afterClosed().subscribe((result: IBalanceDetail) => {
+      if(result){
+        const bankId = result.bankId;
+        const businessId = result.businessId;
+        const balance = result.balance;
+        const updatedAt = result.updatedAt;
+        this.balanceSvc.editBalance(bankId, businessId, balance, updatedAt).subscribe({
+          next: () => {
+            this.toastSvc.success("El saldo se modificó satisfactoriamente","Modificación exitosa");
+            this.updateBalance();
+          }
+        });
+      }
     })
   }
 
