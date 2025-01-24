@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { JsonPipe } from '@angular/common';
 import { IUser } from '../../interfaces/auth.interface';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -44,6 +45,14 @@ export class LoginComponent {
         this.user = user;
         this.router.navigate(['']);
         this.toastSvc.success("Inicio de Sesión Exitosa","Bienvenido")
+      },
+      error: (error : HttpErrorResponse) => {
+        if(error.status === 401){
+          this.toastSvc.error("Usuario y/o contraseña incorrectos","Credenciales inválidas")
+        }
+        else{
+          this.toastSvc.error("Falló el inicio de sesión","Error")
+        }
       }
     })
   }

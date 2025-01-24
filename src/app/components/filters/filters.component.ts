@@ -25,6 +25,7 @@ import { CheqsFilterServiceService } from '../../services/cheqs-filter-service.s
 import { BalanceServiceService } from '../../services/balance-service.service';
 import { IBalance, IBalanceDetail } from '../../interfaces/balance.interface';
 import { EditBalanceComponent } from '../edit-balance/edit-balance.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-filters',
@@ -126,12 +127,18 @@ export class FiltersComponent implements OnInit {
           this.user = user;
           this.getBusinesses(user.userId);
         }
+      },
+      error: (errorResponse : HttpErrorResponse) => {
+        this.toastSvc.error("Error en la suscripción de usuario. Detalle: " + errorResponse.message,"Error cód." + errorResponse.status);
       }
     })
 
     this.cheqsSvc.$cheqsDetail.subscribe({
       next: (cheqsDetail) => {
         this.cheqsDetail = cheqsDetail;
+      },
+      error: (errorResponse: HttpErrorResponse) => {
+        this.toastSvc.error("Error en la suscripción de cheques. Detalle: " + errorResponse.message,"Error cód." + errorResponse.status);
       }
     })
 
@@ -148,6 +155,9 @@ export class FiltersComponent implements OnInit {
         }else{
           this.cheqsSvc.hideCheqs();   // Si no tengo empresa y banco elegido, esconder los cheques.
         }
+      },
+      error: (errorResponse: HttpErrorResponse) => {
+        this.toastSvc.error("Error en la suscripción de filtros. Detalle: " + errorResponse.message,"Error cód. " + errorResponse.status);
       }
     })
 
@@ -159,6 +169,9 @@ export class FiltersComponent implements OnInit {
       next: (businesses: IBusiness[]) => {
         this.businessOptions = businesses;
         this._configureFilteredOptions();
+      },
+      error: (errorResponse: HttpErrorResponse) => {
+        this.toastSvc.error("Error en la obtención del listado de empresas. Detalle: " + errorResponse.message,"Error cód. "+errorResponse.status)
       }
     })
   }
@@ -184,6 +197,9 @@ export class FiltersComponent implements OnInit {
           this.bankOptions = banks;
           this.cheqsFilterSvc.setBusiness(business);
           this._configureBankFilteredOptions();
+        },
+        error: (errorResponse: HttpErrorResponse) => {
+          this.toastSvc.error("Error en la obtención del listado de bancos. Detalle: " + errorResponse.message,"Error cód. " + errorResponse.status);
         }
       })
     }
@@ -215,6 +231,9 @@ export class FiltersComponent implements OnInit {
         next: (balance) => {
           this.balance = balance
           this.updateCheqs();
+        },
+        error: (errorResponse: HttpErrorResponse) => {
+          this.toastSvc.error("Error en la obtención del saldo bancario. Detalle: " + errorResponse.message,"Error cód. " + errorResponse.status);
         }
       });
     }
@@ -245,6 +264,9 @@ export class FiltersComponent implements OnInit {
         next: () => {
           this.updateCheqs();
           this.toastSvc.success("Cheque creado correctamente","Nuevo cheque")
+        },
+        error: (errorResponse: HttpErrorResponse) => {
+          this.toastSvc.error("Fallo la carga del cheque. Detalle: " + errorResponse.message, "Error cód. " + errorResponse.status)
         }
       });
     })
@@ -255,7 +277,8 @@ export class FiltersComponent implements OnInit {
       data: {
         balance: this.balance,
         bank: this.selectedBank,
-        business: this.selectedBusiness
+        business: this.selectedBusiness,
+        user: this.user,
       }
     })
 
@@ -265,10 +288,14 @@ export class FiltersComponent implements OnInit {
         const businessId = result.businessId;
         const balance = result.balance;
         const updatedAt = result.updatedAt;
-        this.balanceSvc.editBalance(bankId, businessId, balance, updatedAt).subscribe({
+        const userId = result.userId;
+        this.balanceSvc.editBalance(bankId, businessId, balance, updatedAt, userId).subscribe({
           next: () => {
             this.toastSvc.success("El saldo se modificó satisfactoriamente","Modificación exitosa");
             this.updateBalance();
+          },
+          error: (errorResponse: HttpErrorResponse) => {
+            this.toastSvc.error("Falló la edición del saldo. Detalle: "+errorResponse.message,"Error cód. " + errorResponse.status)
           }
         });
       }

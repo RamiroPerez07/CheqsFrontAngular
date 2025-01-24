@@ -39,15 +39,18 @@
     </div>
     <div class="balance-container">
       @if(balance && selectedBank && selectedBusiness){
-        <div>Saldo: 
+        <div class="balance-txt">Saldo: 
           <span class="balance">{{(balance ? balance.balance : null) | currency: "ARS"}}</span>
           <button mat-icon-button aria-label="Edit-balance" class="small-icon" (click)="openEditBalanceDialog()">
-            <mat-icon >edit</mat-icon>
+            <mat-icon>edit</mat-icon>
           </button>
         </div>
-        <div class="updated-at-txt">
+        <span class="updated-at-txt">
           Actualizado: {{ balance.updatedAt | date:'HH:mm' }} hs {{ balance.updatedAt | date:'dd/MM/yyyy' }}
-        </div>
+        </span>
+        <span class="updated-at-txt">
+          Usuario: {{ balance.username }}
+        </span>
       }
     </div>
   </div>

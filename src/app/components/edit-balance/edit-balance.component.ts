@@ -5,18 +5,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-//import moment from 'moment';
+import moment from 'moment';
 //import 'moment/locale/es';
-import * as moment from 'moment-timezone';
 import { IBalance, IBalanceDetail } from '../../interfaces/balance.interface';
 import { IBusiness } from '../../interfaces/business.interface';
 import { IBank } from '../../interfaces/bank.interface';
+import { IUser } from '../../interfaces/auth.interface';
 
 
 interface MatDialogData {
   balance: IBalance | null,
   bank: IBank | null,
   business: IBusiness | null,
+  user: IUser | null,
 }
 
 @Component({
@@ -53,13 +54,16 @@ export class EditBalanceComponent {
       const bank = this.data.bank;
       const business = this.data.business;
       const balance = this.balanceControl.value;
-      console.log("La hora arrojada es: ", moment.tz("America/Argentina/Buenos_Aires").toDate())
-      if(bank && business && balance){
+      const username = this.data.user?.username;
+      const userId = this.data.user?.userId;
+      if(bank && business && balance && username && userId){
         const result : IBalanceDetail = {
           balance: balance,
-          updatedAt : moment.tz("America/Argentina/Buenos_Aires").toDate(),
+          updatedAt : moment().toDate(),
           bankId : bank.bankId,
           businessId: business.businessId,
+          username: username,
+          userId: userId,
         }
         this.dialogRef.close(result);
       }

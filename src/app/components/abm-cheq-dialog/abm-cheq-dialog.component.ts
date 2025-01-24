@@ -30,6 +30,8 @@ import { BankBusinessUserServiceService } from '../../services/bank-business-use
 import { IUser } from '../../interfaces/auth.interface';
 import { IBusiness } from '../../interfaces/business.interface';
 import { IBank } from '../../interfaces/bank.interface';
+import { ToastrService } from 'ngx-toastr';
+import { HttpErrorResponse } from '@angular/common/http';
 
 // Registrar la localización en español
 registerLocaleData(localeEs);
@@ -96,6 +98,8 @@ export class AbmCheqDialogComponent implements OnInit {
 
   readonly BbuSvc = inject(BankBusinessUserServiceService);
 
+  readonly toastSvc = inject(ToastrService);
+
   public cheqTypes! : ICheqType[];
 
   public filteredCheqTypes! : Observable<ICheqType[]>;
@@ -117,6 +121,9 @@ export class AbmCheqDialogComponent implements OnInit {
       next: (types) => {
         this.cheqTypes = types;
         this._configureTypeListener();
+      },
+      error: (err : HttpErrorResponse) => {
+        this.toastSvc.error("Error en la suscripción de tipos. Detalle: " + err.message, "Error cód. " + err.status);
       }
     });
 
@@ -124,6 +131,9 @@ export class AbmCheqDialogComponent implements OnInit {
       next: (entities) => {
         this.entities = entities;
         this._configureEntityListener();
+      },
+      error: (err : HttpErrorResponse) => {
+        this.toastSvc.error("Error en la suscripción de entidades. Detalle: " + err.message, "Error cód. " + err.status);
       }
     });
 
@@ -131,6 +141,9 @@ export class AbmCheqDialogComponent implements OnInit {
       next: (user: IUser | null) => {
         this.user = user;
         this.getFilterSelection();
+      },
+      error: (err : HttpErrorResponse) => {
+        this.toastSvc.error("Error en la suscripción del usuario. Detalle: " + err.message, "Error cód. " + err.status);
       }
     })
 
@@ -158,6 +171,9 @@ export class AbmCheqDialogComponent implements OnInit {
       this.BbuSvc.getBankBusinessUserId(bankId, userId, businessId).subscribe({
         next: (bbuId) => {
           this.bbuId = bbuId;
+        },
+        error: (err : HttpErrorResponse) => {
+          this.toastSvc.error("Algo salió mal. Detalle: " + err.message,"Error cód. " + err.status)
         }
       })
     }

@@ -30,8 +30,8 @@ export class BalanceServiceService {
     )
   }
 
-  editBalance(bankId: number, businessId: number, balance: number, updatedAt: Date) : Observable<IBalanceDetail>{
-    return this._http.put<IBalanceDetail>(this._updateBalanceUrl, {bankId, businessId, balance, updatedAt})
+  editBalance(bankId: number, businessId: number, balance: number, updatedAt: Date, userId: number) : Observable<IBalanceDetail>{
+    return this._http.put<IBalanceDetail>(this._updateBalanceUrl, {bankId, businessId, balance, updatedAt, userId})
   }
 
 }

@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { CheqsFilterServiceService } from '../../services/cheqs-filter-service.service';
 import { IBank } from '../../interfaces/bank.interface';
 import { IBusiness } from '../../interfaces/business.interface';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-cheqs-cascade-main',
@@ -53,12 +54,18 @@ accordion = viewChild.required(MatAccordion);
     this.cheqsSvc.$cheqsDetail.subscribe({
       next: (cheqs) => {
         this.cheqsDetailData = [...cheqs];
+      },
+      error: (errorResponse: HttpErrorResponse) => {
+        this.toastSvc.error("Error en la suscripción de cheques. Detalle: " + errorResponse.message,"Error cód. " + errorResponse.status);
       }
     })
 
     this.cheqsSvc.$groupedCheqsDetail.subscribe({
       next: (cheqs) => {
         this.groupedCheqsDetailData = [...cheqs];
+      },
+      error: (errorResponse: HttpErrorResponse) => {
+        this.toastSvc.error("Error en la suscripción de cheques. Detalle: " + errorResponse.message,"Error cód. " + errorResponse.status);
       }
     })
   }
@@ -73,6 +80,9 @@ accordion = viewChild.required(MatAccordion);
         if (!user) {
           this.routerSvc.navigate(["login"]);
         }
+      },
+      error: (errorResponse : HttpErrorResponse) => {
+        this.toastSvc.error("Error en la suscripción de usuario. Detalle: " + errorResponse.message,"Error cód. " + errorResponse.status);
       }
     })
 
@@ -80,6 +90,9 @@ accordion = viewChild.required(MatAccordion);
       next: (filterSelection) => {
         this.selectedBank = filterSelection.bank;
         this.selectedBusiness = filterSelection.business;
+      },
+      error: (errorResponse: HttpErrorResponse) => {
+        this.toastSvc.error("Error en la suscripción de filtros. Detalle: " + errorResponse.message,"Error cód. " + errorResponse.status);
       }
     })
 

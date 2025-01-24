@@ -5,9 +5,8 @@ import localeEs from '@angular/common/locales/es-AR';  // Localización de Argen
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideToastr } from 'ngx-toastr';
-import { ErrorResponseInterceptor } from './interceptors/error-response.interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { registerLocaleData } from '@angular/common';
@@ -29,9 +28,9 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideHttpClient(
       withFetch(),
-      withInterceptors([ErrorResponseInterceptor]),
+      //withInterceptors([ErrorResponseInterceptor]),
     ),
-    provideToastr({timeOut: 900, preventDuplicates: true}),
+    provideToastr({timeOut: 1500, preventDuplicates: false}),
     {provide: LOCALE_ID, useValue: "es-ES"},
   ]
 };

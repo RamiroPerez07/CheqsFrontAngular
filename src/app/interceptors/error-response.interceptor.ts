@@ -11,17 +11,13 @@ import { catchError, throwError } from 'rxjs';
 export const ErrorResponseInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
-) => next(req).pipe(catchError(handleErrorResponse));
+) => next(req).pipe(catchError((error) => handleErrorResponse(error)));
 
 function handleErrorResponse(
-  error: HttpErrorResponse
+  error: HttpErrorResponse,
 ): ReturnType<typeof throwError> {
 
-  const toastSvc = inject(ToastrService);
-
   const errorResponse = `Error code :${error.status}, message: ${error.message}`;
-
-  toastSvc.error(errorResponse,"Error")
 
   return throwError(() => errorResponse);
 }

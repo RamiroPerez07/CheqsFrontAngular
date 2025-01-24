@@ -53,6 +53,8 @@
 .updated-at-txt{
   font-size: 0.6rem;
   font-weight: 300;
+  display: block !important;
+  line-height: 0.65rem;
 }
 
 .balance-container>div{
@@ -61,14 +63,22 @@
   align-items: center;
 }
 
-.balance{
-  font-weight: 500;
-}
 
 .balance-container span{
   display: contents;
 }
 
-.small-icon {
-  transform: scale(0.8);
+.small-icon{
+  transform: scale(0.75);
+}
+
+
+.balance-txt{
+  font-size: 0.9rem;
+  line-height: 0.95rem;
+  height: 38px;
+}
+
+.balance{
+  font-weight: 500;
 }

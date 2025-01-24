@@ -10,18 +10,19 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CheqsFilterServiceService } from '../../services/cheqs-filter-service.service';
-import { filter } from 'rxjs';
 import { IBank } from '../../interfaces/bank.interface';
 import { IBusiness } from '../../interfaces/business.interface';
 import { IUser } from '../../interfaces/auth.interface';
 import { AuthServiceService } from '../../services/auth-service.service';
 import { IBalance } from '../../interfaces/balance.interface';
 import { BalanceServiceService } from '../../services/balance-service.service';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-cheq-table',
   standalone: true,
-  imports: [MatTableModule, MatCheckboxModule, CurrencyPipe, DatePipe, NgClass, MatMenuModule, MatIconModule, MatButtonModule],
+  imports: [MatTableModule, MatCheckboxModule, CurrencyPipe, DatePipe, NgClass, MatMenuModule, MatIconModule, MatButtonModule, MatTooltipModule],
   templateUrl: './cheq-table.component.html',
   styleUrl: './cheq-table.component.css'
 })
@@ -63,18 +64,27 @@ export class CheqTableComponent implements OnChanges, OnInit{
       next: (filterSelection) => {
         this.selectedBank = filterSelection.bank;
         this.selectedBusiness = filterSelection.business;
+      },
+      error: (err : HttpErrorResponse) => {
+        this.toastSvc.error("Error en la suscripción de los filtros. Detalle: " + err.message,"Error cód. " + err.status)
       }
     })
 
     this.authSvc.$user.subscribe({
       next: (user: IUser | null) => {
         this.user = user;
+      },
+      error: (err : HttpErrorResponse) => {
+        this.toastSvc.error("Error en la suscripción del usuario. Detalle: " + err.message, "Error cód. " + err.status);
       }
     })
 
     this.balanceSvc.$balance.subscribe({
       next: (balance) => {
         this.balance = balance
+      },
+      error: (err : HttpErrorResponse) => {
+        this.toastSvc.error("Error en la suscripción del saldo. Detalle: " + err.message,"Error cód. "+ err.status);
       }
     })
   }
@@ -84,7 +94,7 @@ export class CheqTableComponent implements OnChanges, OnInit{
     const business = this.selectedBusiness;
     const balance = this.balance;
     if(this.user && bank && business && balance){
-      this.cheqsSvc.getCheqsDetail(bank.bankId,business.businessId, balance.balance).subscribe(); 
+      this.cheqsSvc.getCheqsDetail(bank.bankId, business.businessId, balance.balance).subscribe(); 
     }
   }
 
@@ -120,6 +130,9 @@ export class CheqTableComponent implements OnChanges, OnInit{
         this.toastSvc.success("Eliminar", "Cheques eliminados correctamente");
         this.updateCheqs();
         this.cheqSelection.clear();
+      },
+      error: (err : HttpErrorResponse) => {
+        this.toastSvc.error("Error al eliminar cheque. Detalle: " + err.message,"Error cód. "+ err.status);
       }
     });
   }
@@ -143,8 +156,27 @@ export class CheqTableComponent implements OnChanges, OnInit{
         this.toastSvc.success("Estado actualizado correctamente", "Actualización");
         this.updateCheqs();
         this.cheqSelection.clear();
+      },
+      error: (err : HttpErrorResponse) => {
+        this.toastSvc.error("Error al ejecutar el cambio de estado. Detalle: " + err.message,"Error cód. " + err.status)
       }
     })
   }
+
+
+  formatTooltip(element: ICheqDetail): string {
+    const createdAt = element.createdAt ? new Date(element.createdAt) : null;
+    
+    // Función para formatear con dos dígitos
+    const formatNumber = (num: number): string => num.toString().padStart(2, '0');
+    
+    const formattedDate = createdAt 
+        ? `${formatNumber(createdAt.getHours())}:${formatNumber(createdAt.getMinutes())} hs ${createdAt.getDate()}/${createdAt.getMonth() + 1}/${createdAt.getFullYear()}` 
+        : 'Fecha no disponible';
+
+    const userName = element.username || 'Usuario desconocido';
+
+    return `Cargado: ${formattedDate}\nUsuario: ${userName}`;
+}
 
 }
