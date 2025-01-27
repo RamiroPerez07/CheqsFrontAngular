@@ -2,12 +2,13 @@
   <div class="header-content">
     <h1 class="app-title">Cascada de cheques</h1>
     @if (user) {
-      <div class="user-profile">
+      <div class="user-profile" (click)="toggleUserDrawer()">
         <div class="user-profile-img">{{user.username.slice(0,1).toUpperCase()}}</div>
         <span>{{user.username}}</span>
       </div>
     }
   </div>
+  <app-user-drawer #drawer></app-user-drawer>
 </header>
 <main class="main">
   <router-outlet />

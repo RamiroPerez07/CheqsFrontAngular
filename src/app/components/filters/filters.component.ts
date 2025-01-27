@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output, ViewChild, viewChild } from '@angular/core';
 import {MatAutocompleteModule, MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -26,6 +26,8 @@ import { BalanceServiceService } from '../../services/balance-service.service';
 import { IBalance, IBalanceDetail } from '../../interfaces/balance.interface';
 import { EditBalanceComponent } from '../edit-balance/edit-balance.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { UserDrawerComponent } from '../user-drawer/user-drawer.component';
+import { MatDrawer } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-filters',
