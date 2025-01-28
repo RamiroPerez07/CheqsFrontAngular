@@ -1,0 +1,34 @@
+<h2>Gestión de empresas</h2>
+<div class="action-buttons">
+    <button mat-button (click)="accordion().openAll()">Expandir todo</button>
+    <button mat-button (click)="accordion().closeAll()">Contraer todo</button>
+</div>
+
+<mat-accordion class="business-accordion" multi>
+
+@for(business of businesses; track business.business.businessId){
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+        <mat-panel-title>{{business.business.businessName}}</mat-panel-title>
+        <mat-panel-description>
+            <span class="business-detail">Creado: {{ business.business.createdAt | date:'HH:mm' }} hs {{ business.business.createdAt | date:'dd/MM/yyyy' }}</span>
+            <span class="business-detail">Actualizado: {{ business.business.lastUpdatedAt | date:'HH:mm' }} hs {{ business.business.lastUpdatedAt | date:'dd/MM/yyyy' }}</span>
+        </mat-panel-description>
+        </mat-expansion-panel-header>
+        
+        @for(bank of business.banks; track bank.bank.bankId){
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                <mat-panel-title>{{bank.bank.bankName}}</mat-panel-title>
+                </mat-expansion-panel-header>
+                
+                <app-users-table [users] = "bank.users" ></app-users-table>
+
+            </mat-expansion-panel>
+        }
+
+
+    </mat-expansion-panel>
+}
+
+</mat-accordion>

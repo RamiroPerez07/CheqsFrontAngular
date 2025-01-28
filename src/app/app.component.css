@@ -29,7 +29,7 @@ h1.app-title{
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  border: 1px rgb(230, 230, 230) solid;
+  border: 1px rgb(215, 215, 215) solid;
   padding: 5px 10px;
   border-radius: 10px;
 }

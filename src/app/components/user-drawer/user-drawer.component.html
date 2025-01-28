@@ -1,6 +1,16 @@
-<mat-drawer-container class="user-profile-drawer" hasBackdrop="true" hidden="true">
-    <mat-drawer #drawer mode="over">I'm a drawer</mat-drawer>
-    <mat-drawer-content>
-        <button mat-raised-button (click)="drawer.toggle()">Toggle drawer</button>
-    </mat-drawer-content>
-</mat-drawer-container>
+<div class="side-menu" [ngClass]="{'open': menuOpen}">
+    <button mat-icon-button (click)="toggleMenu()" class="close-drawer-btn">
+        <mat-icon>close</mat-icon>
+    </button>
+    <div class="user-info-container">
+        <span>Hola, {{user?.username}}</span>
+        <span>{{user?.email}}</span>
+        <span>{{user?.rol === "User" ? "Usuario normal" : "Usuario administrador"}}</span>
+    </div>
+    <ul>
+      <li><a (click)="goToCheqsCascade()">Cascada de cheques</a></li>
+      <li><a (click)="goToMyBusinesses()">Gestión de empresas</a></li>
+      <li><a (click)="closeUserSession()">Cerrar sesión</a></li>
+    </ul>
+</div>
+<div class="overlay" [ngClass]="{'show': menuOpen}" (click)="toggleMenu()"></div>

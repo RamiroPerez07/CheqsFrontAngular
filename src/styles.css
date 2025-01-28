@@ -26,3 +26,8 @@ main{
 .lf{
   font-weight: 300;
 }
+
+.action-buttons{
+  margin-top: 8px;
+  margin-bottom: 8px;
+}

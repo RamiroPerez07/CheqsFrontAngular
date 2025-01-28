@@ -15,7 +15,7 @@
               <mat-expansion-panel-header>
                 <mat-panel-title> {{cheqs.period}} </mat-panel-title>
                 <mat-panel-description class="panel-description" [ngClass]="{'negative': ((cheqs.cheqs.at(-1)?.accumulatedAmount) ?? 0) < 0}">
-                  Saldo: {{cheqs.cheqs.at(-1)?.accumulatedAmount | currency}}
+                  Saldo: {{cheqs.cheqs.at(-1)?.accumulatedAmount | currency:"ARS"}}
                 </mat-panel-description>
               </mat-expansion-panel-header>
               <!--Content-->
