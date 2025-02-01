@@ -11,6 +11,7 @@ export interface IBusinessDetail{
     business: IBusiness,
     banks: {
         bank: IBank,
+        balance: number;
         users: {
             userId: number,
             username: string,

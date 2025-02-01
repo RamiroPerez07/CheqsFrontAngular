@@ -1,7 +1,7 @@
-.username-column{
-    width: 250px;
+.mat-column-username {
+    width: 100px;
 }
 
-.email-column{
-    width: 350px;
+.mat-column-email {
+    width: 30px;
 }

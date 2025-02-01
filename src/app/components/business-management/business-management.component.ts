@@ -8,7 +8,7 @@ import { IUser } from '../../interfaces/auth.interface';
 import { AuthServiceService } from '../../services/auth-service.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
-import { DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { UsersTableComponent } from "../users-table/users-table.component";
 
 @Component({
@@ -19,7 +19,8 @@ import { UsersTableComponent } from "../users-table/users-table.component";
     MatIconModule,
     MatButtonModule,
     DatePipe,
-    UsersTableComponent
+    UsersTableComponent,
+    CurrencyPipe,
 ],
   templateUrl: './business-management.component.html',
   styleUrl: './business-management.component.css'
